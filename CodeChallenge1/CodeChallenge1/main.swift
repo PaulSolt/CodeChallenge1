@@ -25,28 +25,36 @@ So the word 'word' would map to:
 'word' ->  ["word", "wor1", "wo1d", "wo2", "w1rd", "w1r1", "w2d", "w3", "1ord", "1or1", "1o1d", "1o2", "2rd", "2r1", "3d", "4"]
 */
 
-func testEqual(expected: String, actual: String, message: String) {
-    if expected == actual {
-        print("Passed: \"\(message)\" test")
-        print("\tActual: \(actual)")
-    } else {
-        print("Failed: \"\(message)\" test\n\tExpected: \n\t\t\(expected)\n\tActual:\n\t\t\(actual)")
-    }
-}
-
-func testEqualArray(expected: [String], actual: [String], message: String) {
-    if expected.sorted() == actual.sorted() {
-        print("Passed: \"\(message)\" test")
-        print("\tActual: \(actual)")
-    } else {
-        print("Failed: \"\(message)\" test\n\tExpected: \n\t\t\(expected.sorted())\n\tActual:\n\t\t\(actual.sorted())")
-    }
-}
-
+/// Create an array of words using the rules
+/// 1. A letter maps to itself or "1" ("a" = ["a" or "1"])
+/// 2. Adjacent numbers are added together
 func generateWords(input: String) -> [String] {
     let array = Array(input)
     let output = chop(array: array)
     return output.map { compress(string: $0) }
+}
+
+private func chop(array: [Character]) -> [String] {
+    guard let head = array.first else { return [] }
+    let tail = Array(array.dropFirst())
+    if tail.isEmpty {
+        return baseCase(head)
+    }
+
+    // Recursively chop the array into parts
+    var mutations: [String] = []
+    let tree = chop(array: tail)
+    mutations.append(contentsOf: tree)
+    
+    // recombine head + variations
+    var output: [String] = []
+    for element in baseCase(head) {
+        for mutant in mutations {
+            var variation = String(element + mutant)
+            output.append(variation)
+        }
+    }
+    return output
 }
 
 func baseCase(_ character: Character) -> [String] {
@@ -57,33 +65,10 @@ func baseCase(_ character: Character) -> [String] {
     }
 }
 
-func chop(array: [Character]) -> [String] {
-    guard let head = array.first else { return [] }
-    
-    let tail = Array(array.dropFirst())
-    
-    if tail.isEmpty {
-        return baseCase(head)
-    }
-
-    var mutations: [String] = []
-    let tree = chop(array: tail)
-    mutations.append(contentsOf: tree)
-    
-    var output: [String] = []
-
-    for element in baseCase(head) {
-        for mutant in mutations {
-            var variation = String(element + mutant)
-            // TODO: Memoize? Compress?
-            output.append(variation)
-        }
-    }
-    return output
-}
-
-
-func compress(string: String) -> String {
+/// Compresses adjacent numbers
+/// a11 -> a2
+/// a15 -> a6
+private func compress(string: String) -> String {
     var output = ""
     var counter = 0
     for  letter in string {
@@ -102,6 +87,26 @@ func compress(string: String) -> String {
     }
     return output
 }
+
+// Test helper methods for HackerRank Unit Tests
+func testEqual(expected: String, actual: String, message: String) {
+    if expected == actual {
+        print("Passed: \"\(message)\" test")
+        print("\tActual: \(actual)")
+    } else {
+        print("Failed: \"\(message)\" test\n\tExpected: \n\t\t\(expected)\n\tActual:\n\t\t\(actual)")
+    }
+}
+
+func testEqualArray(expected: [String], actual: [String], message: String) {
+    if expected.sorted() == actual.sorted() {
+        print("Passed: \"\(message)\" test")
+        print("\tActual: \(actual)")
+    } else {
+        print("Failed: \"\(message)\" test\n\tExpected: \n\t\t\(expected.sorted())\n\tActual:\n\t\t\(actual.sorted())")
+    }
+}
+
 
 // Test the expansion of the recursive algorithm
 let testChop1 = chop(array: ["a"])
@@ -162,7 +167,7 @@ let length = crashXcode.description.count
 print("crashXcodeOutput: \(testMax2) has \(crashXcode.count) words and \(length) character output")
 // 15+ characters crashes Xcode (output word array is too long print)
 // Running app on terminal works fine
-print("testMax2: \(testMax2) has \(crashXcode) words")
+//print("testMax2: \(testMax2) has \(crashXcode) words")  // Uncomment to break print()
 
 // The amount of words we create will explode as the word length gets longer
 // this currently is not solved with the current implementation of the algorithm
