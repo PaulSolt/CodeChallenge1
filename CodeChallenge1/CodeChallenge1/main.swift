@@ -140,3 +140,5 @@ testEqual(expected: "abc", actual: compress(string: testCompress5), message: tes
 let test1 = "abc"
 testEqualArray(expected: ["abc", "ab1", "a1c", "1bc", "2c", "a2", "1b1", "3"], actual: generateWords(input: test1), message: test1)
 
+let test2 = "word"
+testEqualArray(expected: ["word", "wor1", "wo1d", "wo2", "w1rd", "w1r1", "w2d", "w3", "1ord", "1or1", "1o1d", "1o2", "2rd", "2r1", "3d", "4"], actual: generateWords(input: test2), message: test2)
