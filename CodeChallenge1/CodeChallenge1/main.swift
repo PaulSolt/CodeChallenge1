@@ -6,11 +6,6 @@
 //  Copyright © 2019 Paul Solt. All rights reserved.
 //
 
-// All combinations
-// Converting letters into numbers
-// Squashing numbers together
-// Goal is to turn any word into array all combinations using number mapping
-
 import Foundation
 
 /*
