@@ -45,7 +45,8 @@ func testEqualArray(expected: [String], actual: [String], message: String) {
 
 func generateWords(input: String) -> [String] {
     let array = Array(input)
-    return chop(array: array)
+    let output = chop(array: array)
+    return output.map { compress(string: $0) }
 }
 
 func chop(array: [Character]) -> [String] {
@@ -68,10 +69,12 @@ func chop(array: [Character]) -> [String] {
     print("parent: \(String(array))")
     for element in [String(head), "1"] {
         for mutant in mutations {
-            let variation = String(element + mutant)
+            var variation = String(element + mutant)
             print("variation: \(variation)")
             
             // TODO: compress
+            // TODO: Memoize
+//            variation = compress(string: variation)
             output.append(variation)
         }
     }
@@ -106,9 +109,18 @@ func compress(string: String) -> String {
     }
     return output
 }
-let test4 = generateWords(input: "abc")
-testEqualArray(expected: ["abc", "ab1", "a1c", "1bc", "11c", "a11", "1b1", "111"], actual: test4, message: "abc")
 
+// Test the expansion of the recursive algorithm
+let testChop1 = chop(array: ["a"])
+testEqualArray(expected: ["a", "1"], actual: testChop1, message: "a")
+
+let testChop2 = chop(array: ["a", "b"])
+testEqualArray(expected: ["ab", "a1", "1b", "11"], actual: testChop2, message: "ab")
+
+let testChop3 = chop(array: ["a", "b", "c"])
+testEqualArray(expected: ["abc", "ab1", "a1c", "1bc", "11c", "a11", "1b1", "111"], actual: testChop3, message: "abc")
+
+// Test the compression of adjacent numbers
 let testCompress1 = "111"
 testEqual(expected: "3", actual: compress(string: testCompress1), message: testCompress1)
 
@@ -123,4 +135,8 @@ testEqual(expected: "1b1", actual: compress(string: testCompress4), message: tes
 
 let testCompress5 = "abc"
 testEqual(expected: "abc", actual: compress(string: testCompress5), message: testCompress5)
+
+// Test the final algorithm
+let test1 = "abc"
+testEqualArray(expected: ["abc", "ab1", "a1c", "1bc", "2c", "a2", "1b1", "3"], actual: generateWords(input: test1), message: test1)
 
