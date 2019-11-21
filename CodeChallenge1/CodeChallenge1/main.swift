@@ -45,7 +45,7 @@ private func chop(array: [Character]) -> [String] {
     var output: [String] = []
     for element in baseCase(head) {
         for mutant in mutations {
-            var variation = String(element + mutant)
+            let variation = String(element + mutant)
             output.append(variation)
         }
     }
