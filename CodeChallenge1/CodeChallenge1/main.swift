@@ -160,8 +160,8 @@ let testMax2 = "a-very-long-wor"
 let crashXcode = generateWords(input: testMax2)
 let length = crashXcode.description.count
 print("crashXcodeOutput: \(testMax2) has \(crashXcode.count) words and \(length) character output")
-// 15+ characters crashes Xcode (output word array is too long print)
-// Running app on terminal works fine
+// 15+ characters crashes Xcode/HackerRank output (word array is too long print)
+// Running app on terminal works fine// Running app on terminal works fine
 //print("testMax2: \(testMax2) has \(crashXcode) words")  // Uncomment to break print()
 
 // The amount of words we create will explode as the word length gets longer
